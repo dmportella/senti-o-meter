@@ -1,4 +1,0 @@
-#!/usr/bin/env node
-
-require('../src/senti-o-meter/bin/www')
-console.log('started');

@@ -4,12 +4,8 @@
   "description": "Sentiment analysis on slack messages",
   "main": "index.js",
   "dependencies": {
-    "bayes": "0.0.4",
-    "express": "^4.13.4"
   },
-  "devDependencies": {},
   "scripts": {
-    "start": "node ./bin/start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

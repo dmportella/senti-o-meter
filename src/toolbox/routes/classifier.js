@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
   	name: "Classifier API",
   	links: [
   		{
-  			name: "classifier",
+  			name: "service discovery",
   			rel: "self",
   			type: "application/json",
   			href: req.originalUrl
