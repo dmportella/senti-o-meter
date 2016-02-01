@@ -34,28 +34,24 @@ app.use((req, res, next) => {
 	next(err);
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
+/* eslint-disable no-unused-vars */
 if (app.get('env') === 'development') {
-	app.use((err, req, res) => {
+	app.use((err, req, res, next) => {
 		res.status(err.status || 500);
-		res.render('error', {
+		res.json({
 			message: err.message,
 			error: err
 		});
 	});
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
 	res.status(err.status || 500);
-	res.render('error', {
+	res.json({
 		message: err.message,
 		error: {}
 	});
 });
+/* eslint-enable no-unused-vars */
 
 module.exports = app;

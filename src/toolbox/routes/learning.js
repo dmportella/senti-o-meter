@@ -8,7 +8,7 @@ router
 	.all('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.all('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res) => {
-		res.status(200).send(
+		res.status(200).json(
 			{
 				name: 'Learning API',
 				links: [
