@@ -1,6 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 const path = require('path');
+const url = require('url');
 const helpers = require('hateoas-helpers');
 
 /* GET home page. */
@@ -8,6 +9,7 @@ router
 	.all('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.all('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res) => {
+		const callingUrl = url.parse(req.originalUrl);
 		res.status(200).json(
 			{
 				name: 'Learning API',
@@ -16,13 +18,13 @@ router
 						name: 'service discovery',
 						rel: 'self',
 						type: 'application/json',
-						href: req.originalUrl
+						href: callingUrl.pathname
 					},
 					{
 						name: 'learn',
 						rel: 'action',
 						type: 'application/json',
-						href: path.join(req.originalUrl, '/:classifier/learn'),
+						href: path.join(callingUrl.pathname, '/:classifier/learn'),
 						params: [
 							{
 								name: 'classifier',

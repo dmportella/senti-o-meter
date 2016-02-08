@@ -2,12 +2,14 @@ const express = require('express');
 const router = new express.Router();
 const helpers = require('hateoas-helpers');
 const path = require('path');
+const url = require('url');
 
 /* GET home page. */
 router
 	.get('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res) => {
+		const callingUrl = url.parse(req.originalUrl);
 		res.status(200).json(
 			{
 				name: 'Classifier API',
@@ -16,7 +18,7 @@ router
 						name: 'service discovery',
 						rel: 'self',
 						type: 'application/json',
-						href: req.originalUrl
+						href: callingUrl.pathname
 					}
 				]
 			});
