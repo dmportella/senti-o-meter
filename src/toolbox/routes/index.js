@@ -7,8 +7,8 @@ const helpers = require('hateoas-helpers');
 
 /* GET home page. */
 router
-	.all('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
-	.all('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
+	.get('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
+	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res) => {
 		const callingUrl = url.parse(req.originalUrl);
 		res.status(200).send(
@@ -18,18 +18,21 @@ router
 					{
 						name: 'toolbox',
 						rel: 'self',
+						method: 'get',
 						type: 'application/json',
 						href: callingUrl.pathname
 					},
 					{
 						name: 'classifiers',
 						rel: 'self',
+						method: 'get',
 						type: 'application/json',
 						href: path.join(callingUrl.pathname, '/classifiers')
 					},
 					{
 						name: 'learning',
 						rel: 'self',
+						method: 'get',
 						type: 'application/json',
 						href: path.join(callingUrl.pathname, '/learning')
 					}

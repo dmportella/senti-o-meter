@@ -17,6 +17,7 @@ router
 					{
 						name: 'service discovery',
 						rel: 'self',
+						method: 'get',
 						type: 'application/json',
 						href: callingUrl.pathname
 					}
@@ -30,6 +31,16 @@ router
 	.post('/',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.post('/', (req, res) => {
+		res.set('location', path.join(req.originalUrl, '999'));
+		res.status(201).send();
+	})
+	.patch('/',
+		(req, res, next) => helpers.checkMethod(['patch'], req, res, next))
+	.patch('/',
+		(req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
+	.patch('/',
+		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
+	.patch('/', (req, res) => {
 		res.set('location', path.join(req.originalUrl, '999'));
 		res.status(201).send();
 	});
