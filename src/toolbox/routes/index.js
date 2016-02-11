@@ -24,14 +24,14 @@ router
 					},
 					{
 						name: 'classifiers',
-						rel: 'self',
+						rel: 'classifiers',
 						method: 'get',
 						type: 'application/json',
 						href: path.join(callingUrl.pathname, '/classifiers')
 					},
 					{
 						name: 'learning',
-						rel: 'self',
+						rel: 'learning',
 						method: 'get',
 						type: 'application/json',
 						href: path.join(callingUrl.pathname, '/learning')

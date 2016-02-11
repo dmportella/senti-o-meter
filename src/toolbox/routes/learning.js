@@ -22,7 +22,7 @@ router
 					},
 					{
 						name: 'learn',
-						rel: 'action',
+						rel: 'learn',
 						method: 'post',
 						type: 'application/json',
 						href: path.join(callingUrl.pathname, '/:classifier/learn'),
