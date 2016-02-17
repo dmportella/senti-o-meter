@@ -3,6 +3,9 @@ const router = new express.Router();
 const path = require('path');
 const url = require('url');
 const helpers = require('hateoas-helpers');
+const utils = require('../src/utils');
+const negotiation = require('../src/negotiation');
+const classification = require('../src/classification');
 
 router
 	.get('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
@@ -37,23 +40,24 @@ router
 				]
 			});
 	})
-	.post('/:classifier/learn',
+	.post('/:bucket/learn',
 		(req, res, next) => helpers.checkMethod(['post'], req, res, next))
-	.post('/:classifier/learn',
+	.post('/:bucket/learn',
 		(req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
-	.post('/:classifier/learn',
+	.post('/:bucket/learn',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
-	.post('/:classifier/learn', (req, res) => {
-		const classifier = (req.params.classifier || '').replace(/[^a-zA-Z-]/gi, '').toLowerCase();
+	.post('/:bucket/learn', (req, res, next) => {
+		const id = utils.getParameter('bucket', req.params.bucket || '', '/[^a-zA-Z0-9-]/gi');
 
-		if (!classifier.trim() || classifier === '') {
-			const uriError = new URIError();
-			uriError.message = 'The uri parameters classifier is missing.';
-			uriError.status = 400;
-			throw uriError;
+		const bucket = classification.Buckets.getBucketByIdOrName(id);
+
+		if (!bucket) {
+			negotiation.return400(next, 'Bucket not found.');
+		} else {
+			// classify
+
+			res.status(204).send();
 		}
-
-		res.status(204).send();
 	});
 
 module.exports = router;

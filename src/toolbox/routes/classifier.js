@@ -3,6 +3,9 @@ const router = new express.Router();
 const helpers = require('hateoas-helpers');
 const path = require('path');
 const url = require('url');
+const classification = require('../src/classification');
+const utils = require('../src/utils');
+const negotiation = require('../src/negotiation');
 
 /* GET home page. */
 router
@@ -52,7 +55,7 @@ router
 	.post('/',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.post('/', (req, res) => {
-		res.set('location', path.join(req.originalUrl, '999'));
+		res.location(path.join(req.originalUrl, '999'));
 		res.status(201).send();
 	})
 	.patch('/:id',
@@ -61,41 +64,33 @@ router
 		(req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.patch('/:id',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
-	.patch('/:id', (req, res) => {
-		const id = (req.params.id || '').replace(/[^a-zA-Z0-9-]/gi, '').toLowerCase();
+	.patch('/:id', (req, res, next) => {
+		const id = utils.getParameter('id', req.params.id || '', '/[^a-zA-Z0-9-]/gi');
 
-		if (!id.trim() || id === '') {
-			const uriError = new URIError();
-			uriError.message = 'The uri parameters id is missing.';
-			uriError.status = 400;
-			throw uriError;
+		const bucket = classification.Buckets.getBucketByIdOrName(id);
+
+		if (!bucket) {
+			negotiation.return404(next);
+		} else {
+			// TODO modify & save
+
+			res.status(200).send(bucket);
 		}
-
-		res.status(200).send(
-			{
-				id: '1212121',
-				name: 'asdasdasd'
-			});
 	})
 	.get('/:id',
 		(req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.get('/:id',
 		(req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
-	.get('/:id', (req, res) => {
-		const id = (req.params.id || '').replace(/[^a-zA-Z0-9-]/gi, '').toLowerCase();
+	.get('/:id', (req, res, next) => {
+		const id = utils.getParameter('id', req.params.id || '', '/[^a-zA-Z0-9-]/gi');
 
-		if (!id.trim() || id === '') {
-			const uriError = new URIError();
-			uriError.message = 'The uri parameters id is missing.';
-			uriError.status = 400;
-			throw uriError;
+		const bucket = classification.Buckets.getBucketByIdOrName(id);
+
+		if (!bucket) {
+			negotiation.return404(next);
+		} else {
+			res.status(200).send(bucket);
 		}
-
-		res.status(200).send(
-			{
-				id: '1212121',
-				name: 'asdasdasd'
-			});
 	});
 
 module.exports = router;
