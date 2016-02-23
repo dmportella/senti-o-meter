@@ -25,7 +25,10 @@ class Negotiation {
 				res.send(this.data);
 			},
 			html: () => {
-				res.status(200).render(this.routeName, { data: this.data });
+				res.status(this.code).render(this.routeName, { data: this.data });
+			},
+			text: () => {
+				res.status(this.code).send(this.data);
 			},
 			default: () => {
 				const err = new Error('Not Acceptable');
