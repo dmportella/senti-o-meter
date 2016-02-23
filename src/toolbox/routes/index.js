@@ -4,14 +4,16 @@ const router = new express.Router();
 const path = require('path');
 const url = require('url');
 const helpers = require('hateoas-helpers');
+const negotiation = require('../src/negotiation');
 
 /* GET home page. */
 router
 	.get('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
-	.get('/', (req, res) => {
+	.get('/', (req, res, next) => {
 		const callingUrl = url.parse(req.originalUrl);
-		res.status(200).send(
+		negotiation.withRoute('home')
+			.withPayload(
 			{
 				name: 'Toolbox API',
 				links: [
@@ -37,7 +39,9 @@ router
 						href: path.join(callingUrl.pathname, '/learning')
 					}
 				]
-			});
+			})
+		.withStatus(200)
+		.send(req, res, next);
 	});
 
 module.exports = router;

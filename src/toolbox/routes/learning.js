@@ -10,9 +10,10 @@ const classification = require('../src/classification');
 router
 	.get('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
-	.get('/', (req, res) => {
+	.get('/', (req, res, next) => {
 		const callingUrl = url.parse(req.originalUrl);
-		res.status(200).json(
+		negotiation.withRoute('learning')
+			.withPayload(
 			{
 				name: 'Learning API',
 				links: [
@@ -38,7 +39,9 @@ router
 						]
 					}
 				]
-			});
+			})
+			.withStatus(200)
+			.send(req, res, next);
 	})
 	.post('/:bucket/learn',
 		(req, res, next) => helpers.checkMethod(['post'], req, res, next))
@@ -56,7 +59,9 @@ router
 		} else {
 			// classify
 
-			res.status(204).send();
+			negotiation.withRoute('learning')
+			.withStatus(204)
+			.send(req, res, next);
 		}
 	});
 
