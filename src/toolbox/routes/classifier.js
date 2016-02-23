@@ -11,9 +11,10 @@ const negotiation = require('../src/negotiation');
 router
 	.get('/', (req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
-	.get('/', (req, res) => {
+	.get('/', (req, res, next) => {
 		const callingUrl = url.parse(req.originalUrl);
-		res.status(200).json(
+		negotiation.withRoute('classifiers')
+			.withPayload(
 			{
 				name: 'Classifier API',
 				links: [
@@ -46,7 +47,9 @@ router
 						]
 					}
 				]
-			});
+			})
+			.withStatus(200)
+			.send(req, res, next);
 	})
 	.post('/',
 		(req, res, next) => helpers.checkMethod(['post'], req, res, next))
@@ -54,9 +57,11 @@ router
 		(req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.post('/',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
-	.post('/', (req, res) => {
+	.post('/', (req, res, next) => {
 		res.location(path.join(req.originalUrl, '999'));
-		res.status(201).send();
+		negotiation.withRoute('classifiers')
+				.withStatus(201)
+				.send(req, res, next);
 	})
 	.patch('/:id',
 		(req, res, next) => helpers.checkMethod(['patch'], req, res, next))
@@ -74,7 +79,10 @@ router
 		} else {
 			// TODO modify & save
 
-			res.status(200).send(bucket);
+			negotiation.withRoute('classifier')
+				.withPayload(bucket)
+				.withStatus(200)
+				.send(req, res, next);
 		}
 	})
 	.get('/:id',

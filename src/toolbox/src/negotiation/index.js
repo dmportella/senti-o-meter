@@ -17,18 +17,17 @@ class Negotiation {
 
 	send(req, res, next) {
 		res.format({
-			'json': () => {
-				if(this.code)
-				{
+			json: () => {
+				if (this.code) {
 					res.status(this.code);
 				}
 
 				res.send(this.data);
 			},
-			'html': () => {
+			html: () => {
 				res.status(200).render(this.routeName, { data: this.data });
 			},
-			'default': () => {
+			default: () => {
 				const err = new Error('Not Acceptable');
 				err.status = 406;
 
