@@ -1,5 +1,43 @@
 'use strict';
 
+class Negotiation {
+	constructor(routeName) {
+		this.routeName = routeName;
+	}
+
+	withPayload(data) {
+		this.data = data;
+		return this;
+	}
+
+	withStatus(code) {
+		this.code = code;
+		return this;
+	}
+
+	send(req, res, next) {
+		res.format({
+			'json': () => {
+				if(this.code)
+				{
+					res.status(this.code);
+				}
+
+				res.send(this.data);
+			},
+			'html': () => {
+				res.status(200).render(this.routeName, { data: this.data });
+			},
+			'default': () => {
+				const err = new Error('Not Acceptable');
+				err.status = 406;
+
+				next(err);
+			}
+		});
+	}
+}
+
 class NegotiationBuilder {
 	static return404(next) {
 		const err = new Error('Not Found');
@@ -16,6 +54,10 @@ class NegotiationBuilder {
 		}
 
 		next(err);
+	}
+
+	static withRoute(name) {
+		return new Negotiation(name);
 	}
 }
 

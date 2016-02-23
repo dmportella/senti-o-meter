@@ -89,7 +89,10 @@ router
 		if (!bucket) {
 			negotiation.return404(next);
 		} else {
-			res.status(200).send(bucket);
+			negotiation.withRoute('classifier')
+				.withPayload(bucket)
+				.withStatus(200)
+				.send(req, res, next);
 		}
 	});
 
