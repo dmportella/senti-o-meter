@@ -1,4 +1,5 @@
 'use strict';
+const fs = require('fs');
 
 class Utils {
 	static getParameter(name, value, regex) {
@@ -12,6 +13,12 @@ class Utils {
 		}
 
 		return param;
+	}
+
+	static loadJson(filepath) {
+		const file = fs.readFileSync(filepath);
+
+		return JSON.parse(file);
 	}
 }
 

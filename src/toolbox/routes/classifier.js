@@ -58,7 +58,10 @@ router
 	.post('/',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.post('/', (req, res, next) => {
-		res.location(path.join(req.originalUrl, '999'));
+		classification.Buckets.postBucket(req.body);
+
+		res.location(path.join(req.originalUrl, req.body.id));
+
 		negotiation.withRoute('classifiers')
 				.withStatus(201)
 				.send(req, res, next);
