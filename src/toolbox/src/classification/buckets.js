@@ -24,9 +24,7 @@ class Bucket {
 class BucketRepository {
 	constructor(database) {
 		this.database = database;
-		/* eslint-disable no-undef */
-		this.data = utils.loadJson(`${_dirname}/../../tests/data/classifers.json`);
-		/* eslint-disable no-undef */
+		this.data = utils.loadJson(`${__dirname}/../../tests/data/classifers.json`);
 	}
 
 	getBucketByIdOrName(uuidOrName) {
