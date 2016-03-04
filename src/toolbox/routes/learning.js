@@ -23,7 +23,8 @@ router
 						method: 'get',
 						type: 'application/json',
 						href: callingUrl.pathname
-					},
+					}],
+				actions: [
 					{
 						name: 'learn',
 						rel: 'learn',

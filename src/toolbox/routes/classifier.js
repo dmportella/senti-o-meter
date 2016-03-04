@@ -24,7 +24,8 @@ router
 						method: 'get',
 						type: 'application/json',
 						href: callingUrl.pathname
-					},
+					}],
+				actions: [
 					{
 						name: 'Create Classifier',
 						rel: 'create',
@@ -58,13 +59,17 @@ router
 	.post('/',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.post('/', (req, res, next) => {
-		const bucketId = classification.Buckets.postBucket(req.body);
+		try {
+			const bucketId = classification.Buckets.postBucket(req.body);
 
-		res.location(path.join(req.originalUrl, bucketId));
+			res.location(path.join(req.originalUrl, bucketId));
 
-		negotiation.withRoute('classifiers')
-				.withStatus(204)
-				.send(req, res, next);
+			negotiation.withRoute('classifiers')
+					.withStatus(204)
+					.send(req, res, next);
+		} catch (err) {
+			negotiation.return400(next, err.message);
+		}
 	})
 	.patch('/:id',
 		(req, res, next) => helpers.checkMethod(['patch'], req, res, next))
@@ -79,11 +84,13 @@ router
 
 		if (!bucket) {
 			negotiation.return404(next);
+		} else if (!req.body) {
+			negotiation.return400(next, 'Missing payload.');
 		} else {
-			// TODO modify & save
+			const updatedBucket = classification.Buckets.patchBucket(bucket.id, req.body);
 
 			negotiation.withRoute('classifier')
-				.withPayload(bucket)
+				.withPayload(updatedBucket)
 				.withStatus(200)
 				.send(req, res, next);
 		}

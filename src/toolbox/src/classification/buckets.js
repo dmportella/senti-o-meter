@@ -24,24 +24,42 @@ class Bucket {
 class BucketRepository {
 	constructor(database) {
 		this.database = database;
-		this.data = utils.loadJson(`${__dirname}/../../tests/test-data/classifers.json`);
+		this.data = [];
+
+		_.each(utils.loadJson(`${__dirname}/../../tests/test-data/classifers.json`),
+			(item) => this.data.push(Bucket.fromJSON(item)));
 	}
 
 	getBucketByIdOrName(uuidOrName) {
 		const bucket = _.find(this.data,
 			(item) => item.id === uuidOrName || item.name === uuidOrName);
 
-		return Bucket.fromJSON(bucket);
+		return bucket;
 	}
 
 	postBucket(bucket) {
 		if (bucket && bucket.name && !_.find(this.data,
 			(item) => item.name === bucket.name)) {
+			/* eslint-disable no-param-reassign */
+			bucket.id = uuid.v1();
+			/* eslint-disable no-param-reassign */
 			this.data.push(bucket);
-			return uuid.v1();
+			return bucket.id;
 		}
 
 		throw new Error('Bucket already exists.');
+	}
+
+	patchBucket(id, bucket) {
+		const existingBucket = this.getBucketByIdOrName(id);
+
+		if (existingBucket) {
+			Object.assign(existingBucket, bucket);
+
+			return existingBucket;
+		}
+
+		throw new Error('Bucket doesnt exists.');
 	}
 }
 
