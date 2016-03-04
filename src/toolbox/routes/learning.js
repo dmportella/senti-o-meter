@@ -12,7 +12,7 @@ router
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res, next) => {
 		const callingUrl = url.parse(req.originalUrl);
-		negotiation.withRoute('learning')
+		negotiation.withRoute('index')
 			.withPayload(
 			{
 				name: 'Learning API',
@@ -60,7 +60,7 @@ router
 		} else {
 			// classify
 
-			negotiation.withRoute('learning')
+			negotiation.withRoute('index')
 			.withStatus(204)
 			.send(req, res, next);
 		}
