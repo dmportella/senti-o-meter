@@ -58,12 +58,12 @@ router
 	.post('/',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.post('/', (req, res, next) => {
-		classification.Buckets.postBucket(req.body);
+		const bucketId = classification.Buckets.postBucket(req.body);
 
-		res.location(path.join(req.originalUrl, req.body.id));
+		res.location(path.join(req.originalUrl, bucketId));
 
 		negotiation.withRoute('classifiers')
-				.withStatus(201)
+				.withStatus(204)
 				.send(req, res, next);
 	})
 	.patch('/:id',
