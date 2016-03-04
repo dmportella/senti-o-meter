@@ -24,7 +24,7 @@ class Bucket {
 class BucketRepository {
 	constructor(database) {
 		this.database = database;
-		this.data = utils.loadJson(__dirname + '/../../tests/data/classifers.json');
+		this.data = utils.loadJson(__dirname + '/../../tests/test-data/classifers.json');
 	}
 
 	getBucketByIdOrName(uuidOrName) {

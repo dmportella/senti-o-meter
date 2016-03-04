@@ -1,0 +1,14 @@
+[{
+  "id": "4e4c2ac0-def0-11e5-a60a-9586a7ea91c4",
+  "name": "republicans",
+  "description": "Bucket for classifing republicans party sentiment in the interwebs.",
+  "created": "2016-02-29T14:20:39.180Z",
+  "categories": ["positive", "neutral", "negative"]
+},
+{
+  "id": "d93fe9f0-def0-11e5-a60a-9586a7ea91c4",
+  "name": "democrats",
+  "description": "Bucket for classifing democrats party sentiment in the interwebs.",
+  "created": "2016-02-29T14:25:39.180Z",
+  "categories": ["positive", "neutral", "negative"]
+}]
