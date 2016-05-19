@@ -12,7 +12,7 @@ router
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res, next) => {
 		const callingUrl = url.parse(req.originalUrl);
-		negotiation.withRoute('index')
+		negotiation.route()
 			.withPayload(
 			{
 				name: 'Toolbox API',

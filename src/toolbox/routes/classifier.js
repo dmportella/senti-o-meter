@@ -13,7 +13,7 @@ router
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res, next) => {
 		const callingUrl = url.parse(req.originalUrl);
-		negotiation.withRoute('index')
+		negotiation.route()
 			.withPayload(
 			{
 				name: 'Classifier API',
@@ -64,7 +64,7 @@ router
 
 			res.location(path.join(req.originalUrl, bucketId));
 
-			negotiation.withRoute('index')
+			negotiation.route()
 					.withStatus(204)
 					.send(req, res, next);
 		} catch (err) {
@@ -78,7 +78,7 @@ router
 	.patch('/:id',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.patch('/:id', (req, res, next) => {
-		const id = utils.getParameter('id', req.params.id || '', '/[^a-zA-Z0-9-]/gi');
+		const id = utils.getParameter('id', req.params.id || '', utils.uuidPattern());
 
 		const bucket = classification.Buckets.getBucketByIdOrName(id);
 
@@ -89,7 +89,7 @@ router
 		} else {
 			const updatedBucket = classification.Buckets.patchBucket(bucket.id, req.body);
 
-			negotiation.withRoute('classifier')
+			negotiation.route()
 				.withPayload(updatedBucket)
 				.withStatus(200)
 				.send(req, res, next);
@@ -100,14 +100,14 @@ router
 	.get('/:id',
 		(req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/:id', (req, res, next) => {
-		const id = utils.getParameter('id', req.params.id || '', '/[^a-zA-Z0-9-]/gi');
+		const id = utils.getParameter('id', req.params.id || '', utils.uuidPattern());
 
 		const bucket = classification.Buckets.getBucketByIdOrName(id);
 
 		if (!bucket) {
 			negotiation.return404(next);
 		} else {
-			negotiation.withRoute('index')
+			negotiation.route()
 				.withPayload(bucket)
 				.withStatus(200)
 				.send(req, res, next);

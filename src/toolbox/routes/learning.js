@@ -12,7 +12,7 @@ router
 	.get('/', (req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/', (req, res, next) => {
 		const callingUrl = url.parse(req.originalUrl);
-		negotiation.withRoute('index')
+		negotiation.route()
 			.withPayload(
 			{
 				name: 'Learning API',
@@ -51,9 +51,9 @@ router
 	.post('/:bucket/learn',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.post('/:bucket/learn', (req, res, next) => {
-		const id = utils.getParameter('bucket', req.params.bucket || '', '/[^a-zA-Z0-9-]/gi');
+		const id = utils.getParameter('bucket', req.params.bucket || '', utils.uuidPattern());
 
-		const bucket = classification.Buckets.getBucketByIdOrName(id);
+		const bucket = classification.Buckets.getBucketById(id);
 
 		if (!bucket) {
 			negotiation.return400(next, 'Bucket not found.');

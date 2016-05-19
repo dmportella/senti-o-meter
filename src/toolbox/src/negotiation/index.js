@@ -2,7 +2,7 @@
 
 class Negotiation {
 	constructor(routeName) {
-		this.routeName = routeName;
+		this.routeName = routeName || 'index';
 	}
 
 	withPayload(data) {
@@ -58,7 +58,7 @@ class NegotiationBuilder {
 		next(err);
 	}
 
-	static withRoute(name) {
+	static route(name) {
 		return new Negotiation(name);
 	}
 }
