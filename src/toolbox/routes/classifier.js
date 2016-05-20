@@ -59,16 +59,21 @@ router
 	.post('/',
 		(req, res, next) => helpers.checkType(['application/json'], req, res, next))
 	.post('/', (req, res, next) => {
-		try {
-			const bucketId = classification.Buckets.postBucket(req.body);
-
-			res.location(path.join(req.originalUrl, bucketId));
-
-			negotiation.route()
-					.withStatus(204)
-					.send(req, res, next);
-		} catch (err) {
-			negotiation.return400(next, err.message);
+		if (!req.body) {
+			negotiation.return404(next);
+		} else if (!req.body) {
+			negotiation.return400(next, 'Missing payload.');
+		} else {
+			classification.Buckets.bucketExists(req.body)
+				.then(reply => classification.Buckets.postBucket(req.body))
+				.then(bucketId => {
+					res.location(path.join(req.originalUrl, bucketId));
+					negotiation.route()
+							.withStatus(204)
+							.send(req, res, next);
+				}).catch((err) => {
+					negotiation.return400(next, err.message);
+				});
 		}
 	})
 	.patch('/:id',
@@ -80,38 +85,37 @@ router
 	.patch('/:id', (req, res, next) => {
 		const id = utils.getParameter('id', req.params.id || '', utils.uuidPattern());
 
-		const bucket = classification.Buckets.getBucketByIdOrName(id);
-
-		if (!bucket) {
-			negotiation.return404(next);
-		} else if (!req.body) {
-			negotiation.return400(next, 'Missing payload.');
-		} else {
-			const updatedBucket = classification.Buckets.patchBucket(bucket.id, req.body);
-
-			negotiation.route()
-				.withPayload(updatedBucket)
-				.withStatus(200)
-				.send(req, res, next);
-		}
+		classification.Buckets.patchBucket(id, req.body)
+			.then((updatedBucket) => {
+				negotiation.route()
+					.withPayload(updatedBucket)
+					.withStatus(200)
+					.send(req, res, next);
+			})
+			.catch(() => {
+				negotiation.return404(next);
+			});
 	})
 	.get('/:id',
 		(req, res, next) => helpers.checkMethod(['get'], req, res, next))
 	.get('/:id',
 		(req, res, next) => helpers.checkAccept(['json', 'text', 'html'], req, res, next))
 	.get('/:id', (req, res, next) => {
-		const id = utils.getParameter('id', req.params.id || '', utils.uuidPattern());
+		const id = utils.getParameter('id', req.params.id, utils.uuidPattern());
 
-		const bucket = classification.Buckets.getBucketByIdOrName(id);
-
-		if (!bucket) {
-			negotiation.return404(next);
-		} else {
-			negotiation.route()
-				.withPayload(bucket)
-				.withStatus(200)
-				.send(req, res, next);
-		}
+		classification.Buckets.getBucketById(id)
+			.then((bucket) => {
+				console.log(bucket);
+				if (!bucket) {
+					negotiation.return404(next);
+				} else {
+					negotiation.route()
+						.withPayload(bucket)
+						.withStatus(200)
+						.send(req, res, next);
+				}
+			})
+			.catch((err) => negotiation.return400(next, err));
 	});
 
 module.exports = router;

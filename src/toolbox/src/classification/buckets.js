@@ -1,7 +1,6 @@
 'use strict';
 const uuid = require('uuid');
-const utils = require('../utils');
-const _ = require('underscore');
+const Repository = require('../repository');
 
 class Bucket {
 	constructor(name) {
@@ -21,48 +20,40 @@ class Bucket {
 	}
 }
 
-class BucketRepository {
-	constructor(database) {
-		this.database = database;
-		this.data = [];
-
-		_.each(utils.loadJson(`${__dirname}/../../tests/test-data/classifers.json`),
-			(item) => this.data.push(Bucket.fromJSON(item)));
+class BucketRepository extends Repository {
+	constructor() {
+		super();
 	}
 
-	getBucketByIdOrName(uuidOrName) {
-		const bucket = _.find(this.data,
-			(item) => item.id === uuidOrName || item.name === uuidOrName);
+	bucketExists(uuidOrName) {
+		return super.checkItemExists(`bucket:${uuidOrName}`);
+	}
 
-		return bucket;
+	getBucketById(uuidOrName) {
+		return super.checkItemExists(`bucket:${uuidOrName}`)
+					.then(reply => super.getItem(`bucket:${uuidOrName}`))
+					.catch(err => console.log(err));
 	}
 
 	postBucket(bucket) {
-		if (bucket && bucket.name && !_.find(this.data,
-			(item) => item.name === bucket.name)) {
-			/* eslint-disable no-param-reassign */
-			bucket.id = uuid.v1();
-			/* eslint-disable no-param-reassign */
-			this.data.push(bucket);
-			return bucket.id;
-		}
+		const item = bucket;
+		const id = item && item.id
+			? item.id
+			: (() => {
+				item.id = uuid.v1();
+				return item.id;
+			})();
 
-		throw new Error('Bucket already exists.');
+		return super.postItem(`bucket:${id}`, item);
 	}
 
 	patchBucket(id, bucket) {
-		const existingBucket = this.getBucketByIdOrName(id);
-
-		if (existingBucket) {
-			Object.assign(existingBucket, bucket);
-
-			return existingBucket;
-		}
-
-		throw new Error('Bucket doesnt exists.');
+		return this.getBucketById(id)
+					.then(reply => Object.assign(reply, bucket))
+					.then(reply => this.postBucket(reply));
 	}
 }
 
 module.exports = function CreateRepository() {
-	return new BucketRepository('database');
+	return new BucketRepository();
 };
