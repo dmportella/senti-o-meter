@@ -31,8 +31,8 @@ class BucketRepository extends Repository {
 
 	getBucketById(uuidOrName) {
 		return super.checkItemExists(`bucket:${uuidOrName}`)
-					.then(reply => super.getItem(`bucket:${uuidOrName}`))
-					.catch(err => console.log(err));
+					.then(() => super.getItem(`bucket:${uuidOrName}`))
+					.then(bucket => Bucket.fromJSON(bucket));
 	}
 
 	postBucket(bucket) {

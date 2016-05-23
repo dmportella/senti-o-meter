@@ -9,8 +9,7 @@ class Repository {
 
 	checkItemExists(key) {
 		return new Promise((accept, reject) => {
-			this.database.get(key, (err, reply) => {
-				console.log(err, reply);
+			this.database.get(key, (err) => {
 				if (err) {
 					reject(err);
 				} else {
@@ -23,7 +22,6 @@ class Repository {
 	getItem(key) {
 		return new Promise((accept, reject) => {
 			this.database.get(key, (err, reply) => {
-				console.log(err, reply);
 				if (err) {
 					reject(err);
 				} else {
@@ -37,7 +35,6 @@ class Repository {
 	postItem(key, item) {
 		return new Promise((accept, reject) => {
 			this.database.set(key, JSON.stringify(item), (err, reply) => {
-				console.log(err, reply);
 				if (err) {
 					reject(err);
 				} else {

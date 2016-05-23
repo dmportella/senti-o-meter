@@ -65,7 +65,7 @@ router
 			negotiation.return400(next, 'Missing payload.');
 		} else {
 			classification.Buckets.bucketExists(req.body)
-				.then(reply => classification.Buckets.postBucket(req.body))
+				.then(() => classification.Buckets.postBucket(req.body))
 				.then(bucketId => {
 					res.location(path.join(req.originalUrl, bucketId));
 					negotiation.route()
@@ -105,7 +105,6 @@ router
 
 		classification.Buckets.getBucketById(id)
 			.then((bucket) => {
-				console.log(bucket);
 				if (!bucket) {
 					negotiation.return404(next);
 				} else {
